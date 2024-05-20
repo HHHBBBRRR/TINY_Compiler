@@ -40,7 +40,7 @@ static bool EOF_flag = false;
  *****************/
 static int getNextChar(void)
 {
-    if (linepos >= bufsize)     //need to get a new line from the source file
+    if (linepos >= bufsize) // need to get a new line from the source file
     {
         lineno++;
         if (fgets(lineBuf, BUFLEN - 1, source))
@@ -52,7 +52,7 @@ static int getNextChar(void)
             bufsize = strlen(lineBuf);
             linepos = 0;
         }
-        else                // no more lines in the file
+        else // no more lines in the file
         {
             EOF_flag = true;
             return EOF;
@@ -65,7 +65,7 @@ static int getNextChar(void)
 // put a char "back" into the lineBuf
 static void ungetNextChar(void)
 {
-	if (EOF_flag == false)
+    if (EOF_flag == false)
     {
         linepos--;
     }
@@ -78,9 +78,160 @@ static TokenType reservedLookup(char *s)
         if (strcmp(s, reservedWords[i].str) == 0)
         {
             return reservedWords[i].tok;
-        }   
+        }
     }
-    
+
     return ID;
 }
 
+TokenType getToken(void)
+{
+    bool save; // save the token?
+    int tokenStringIndex = 0;
+    TokenType currentToken;  // current token type which will be returned
+    StateType state = START; // current state of the finite automaton
+
+    while (state != DONE)
+    {
+        int ch = getNextChar();
+        save = true;
+
+        switch (state)
+        {
+        case START:
+            if (isdigit(ch))
+            {
+                state = INNUM;
+            }
+            else if (isalpha(ch))
+            {
+                state = INID;
+            }
+            else if (ch == ':')
+            {
+                state = INASSIGN;
+            }
+            else if ((ch == ' ') || (ch == '\t') || (ch == '\n'))
+            {
+                save = false;
+            }
+            else if (ch == '{')
+            {
+                save = false;
+                state = INCOMMENT;
+            }
+            else
+            {
+                state = DONE;
+                switch (ch)
+                {
+                case EOF:
+                    save = false;
+                    currentToken = ENDFILE;
+                    break;
+                case '=':
+                    currentToken = EQ;
+                    break;
+                case '<':
+                    currentToken = LT;
+                    break;
+                case '+':
+                    currentToken = PLUS;
+                    break;
+                case '-':
+                    currentToken = MINUS;
+                    break;
+                case '*':
+                    currentToken = TIMES;
+                    break;
+                case '/':
+                    currentToken = OVER;
+                    break;
+                case '(':
+                    currentToken = LPAREN;
+                    break;
+                case ')':
+                    currentToken = RPAREN;
+                    break;
+                case ';':
+                    currentToken = SEMI;
+                    break;
+                default:
+                    currentToken = ERROR;
+                    break;
+                }
+            }
+        case INCOMMENT:
+            save = false;
+            if (ch == EOF)
+            {
+                state = DONE;
+                currentToken = ENDFILE;
+            }
+            else if (ch == '}')
+            {
+                state = START;
+            }
+            break;
+        case INASSIGN:
+            state = DONE;
+            if (ch == '=')
+            {
+                currentToken = ASSIGN;
+            }
+            else
+            {
+                ungetNextChar();
+                save = false;
+                currentToken = ERROR;
+            }
+            break;
+        case INNUM:
+            if (!isdigit(ch))
+            {
+                ungetNextChar();
+                save = false;
+                state = DONE;
+                currentToken = NUM;
+            }
+            break;
+        case INID:
+            if (!isalpha(ch))
+            {
+                ungetNextChar();
+                save = false;
+                state = DONE;
+                currentToken = ID;
+            }
+            break;
+        case DONE: // fall through, should never happen
+        default:
+            fprintf(listing, "Scanner Bug: state= %d\n", state);
+            state = DONE;
+            currentToken = ERROR;
+            break;
+        }
+
+        if (save == true && tokenStringIndex <= MAXTOKENLEN)
+        {
+            tokenString[tokenStringIndex++] = (char)ch;
+        }
+
+        if (state == DONE)
+        {
+            tokenString[tokenStringIndex] = '\0';
+            if (currentToken == ID)
+            {
+                currentToken = reservedLookup(tokenString);
+            }
+        }  
+    }
+
+    if (TraceScan)
+    {
+        fprintf(listing, "\t%d: ", lineno);
+        printToken(currentToken, tokenString);
+    }
+
+    return currentToken;
+}
