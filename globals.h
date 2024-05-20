@@ -33,4 +33,10 @@ extern int lineno; /* source line number for listing */
  */
 extern bool EchoSource;
 
+/* TraceScan = TRUE causes token information to be
+ * printed to the listing file as each token is
+ * recognized by the scanner
+ */
+extern int TraceScan;
+
 #endif
