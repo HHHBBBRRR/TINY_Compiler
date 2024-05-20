@@ -23,4 +23,14 @@ extern FILE* listing;   /* listing output text file */
 
 extern int lineno; /* source line number for listing */
 
+/**************************************************/
+/***********   Flags for tracing       ************/
+/**************************************************/
+
+/* EchoSource = TRUE causes the source program to
+ * be echoed to the listing file with line numbers
+ * during parsing
+ */
+extern bool EchoSource;
+
 #endif
