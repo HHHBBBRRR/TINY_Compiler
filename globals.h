@@ -8,15 +8,19 @@
 #include <stdbool.h>
 
 typedef enum {
-    /* Control */
-    ENDFILE, ERROR,
+    ENDFILE,  // when get to the end of file
+    ERROR,    // find something wrong
     /* Keywords */
     IF, THEN, ELSE ,END, REPEAT, UNTIL, READ, WRITE,
-    /*Identifier and Number */
+    /*Identifier and Number (need multi-char)*/
     ID, NUM,
     /* Special symbols */
     ASSIGN, EQ, LT, PLUS, MINUS, TIMES, OVER, LPAREN, RPAREN, SEMI
 } TokenType;
 
+extern FILE* source;    /* source code text file */
+extern FILE* listing;   /* listing output text file */
+
+extern int lineno; /* source line number for listing */
 
 #endif
