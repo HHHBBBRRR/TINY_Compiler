@@ -94,16 +94,20 @@ typedef struct treeNode
 /***********   Flags for tracing       ************/
 /**************************************************/
 
-/* EchoSource = TRUE causes the source program to
+/* EchoSource == true causes the source program to
  * be echoed to the listing file with line numbers
  * during parsing
  */
 extern bool EchoSource;
 
-/* TraceScan = TRUE causes token information to be
+/* TraceScan == true causes token information to be
  * printed to the listing file as each token is
  * recognized by the scanner
  */
-extern int TraceScan;
+extern bool TraceScan;
+
+
+/* Error == true prevents further passes if an error occurs */
+extern bool Error; 
 
 #endif
