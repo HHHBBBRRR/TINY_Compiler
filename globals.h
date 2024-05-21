@@ -45,15 +45,15 @@ typedef enum
 {
     StmtK,
     ExpK
-} NodeKind;
+} NodeKind;         // TINY only has two basic syntaic node kinds: statement and expression
 typedef enum
 {
-    IfK,
-    RepeatK,
-    AssignK,
-    ReadK,
-    WriteK
-} StmtKind;
+    IfK,            // if statement
+    RepeatK,        // repeat statement
+    AssignK,        // assignment statement
+    ReadK,          // read statement (read only one variable every time)
+    WriteK          // write statement (write only one expression every time)
+} StmtKind;         // TINY has 5 statement kinds
 typedef enum
 {
     OpK,
@@ -66,7 +66,7 @@ typedef enum
     Void,
     Integer,
     Boolean
-} ExpType;
+} ExpType;          // used for type checking
 
 #define MAXCHILDREN 3 // if else end
 
@@ -84,8 +84,8 @@ typedef struct treeNode
     union
     {
         TokenType op;
-        int val;
-        char *name;
+        int val;        // for constant
+        char *name;     // for variable
     } attr;
     ExpType type; /* for type checking of exps */
 } TreeNode;
