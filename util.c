@@ -60,3 +60,74 @@ void printToken(TokenType token, const char *tokenString)
 		fprintf(listing, "Unknown token: %d\n", token);
 	}
 }
+
+// create a new statement node for AST
+TreeNode *newStmtNode(StmtKind kind)
+{
+	TreeNode *node = (TreeNode *)malloc(sizeof(TreeNode));
+
+	if (node == NULL)
+	{
+		fprintf(listing, "Out of memory error at line %d\n", lineno);
+		return NULL;
+	}
+
+	for (int i = 0; i < MAXCHILDREN; i++)
+	{
+		node->child[i] = NULL;
+	}
+	node->sibling = NULL;
+	node->nodekind = StmtK;
+	node->kind.stmt = kind;
+	node->lineno = lineno;
+
+	return node;
+}
+
+// create a new expression node for AST
+TreeNode *newExpNode(ExpKind kind)
+{
+	TreeNode *node = (TreeNode *)malloc(sizeof(TreeNode));
+
+	if (node == NULL)
+	{
+		fprintf(listing, "Out of memory error at line %d\n", lineno);
+		return NULL;
+	}
+
+	for (int i = 0; i < MAXCHILDREN; i++)
+	{
+		node->child[i] = NULL;
+	}
+
+	node->sibling = NULL;
+	node->nodekind = ExpK;
+	node->kind.exp = kind;
+	node->lineno = lineno;
+	node->type = Void;
+
+	return node;
+}
+
+char *copyString(char *s)
+{
+	int n;
+	char *t;
+
+	if (s == NULL)
+	{
+		return NULL;
+	}
+
+	n = strlen(s) + 1;
+	t = malloc(n);
+	if (t == NULL)
+	{
+		fprintf(listing, "Out of memory error at line %d\n", lineno);
+		return NULL;
+	}
+
+	strcpy(t, s);
+
+	return t;
+}
