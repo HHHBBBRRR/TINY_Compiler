@@ -69,7 +69,7 @@ TreeNode *newStmtNode(StmtKind kind)
 	if (node == NULL)
 	{
 		fprintf(listing, "Out of memory error at line %d\n", lineno);
-		return NULL;
+		exit(EXIT_FAILURE);
 	}
 
 	for (int i = 0; i < MAXCHILDREN; i++)
@@ -91,8 +91,8 @@ TreeNode *newExpNode(ExpKind kind)
 
 	if (node == NULL)
 	{
-		fprintf(listing, "Out of memory error at line %d\n", lineno);
-		return NULL;
+		fprintf(listing, "Out of memory error at line %d\n", lineno);	
+		exit(EXIT_FAILURE);
 	}
 
 	for (int i = 0; i < MAXCHILDREN; i++)
