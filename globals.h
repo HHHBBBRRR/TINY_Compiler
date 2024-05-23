@@ -106,6 +106,11 @@ extern bool EchoSource;
  */
 extern bool TraceScan;
 
+/* TraceAnalyze == true causes symbol table inserts
+ * and lookups to be reported to the listing file
+ */
+extern bool TraceAnalyze;
+
 
 /* Error == true prevents further passes if an error occurs */
 extern bool Error; 
